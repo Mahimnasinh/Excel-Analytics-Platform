@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Interactive Sales Data Visualization</title>
+	
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 20;
+			background-image: url('data Analatic');
+			background-size: cover;
+			background-position: center;
+			display: flex;
+			flex-direction: column;
+			min-height: 100vh;
+		}
+
+		header {
+			background-color: #1e1c1c;
+			color: #ffffff;
+			font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+			padding: 30px 20px;
+			text-align: center;
+			font-size: 1.8rem;
+			font-weight: bold;
+		}
+
+		.container {
+			flex: 1;
+			padding: 20px;
+			
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
+		.button-group {
+			margin-bottom: 20px;
+			display: flex;
+			gap: 15px;
+			flex-wrap: wrap;
+			justify-content: center;
+		}
+
+		button, select {
+			padding: 10px 20px;
+			font-size: 1rem;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+			background-color: #048eff;
+			color: rgb(253, 251, 251);
+			transition: background-color 0.3s ease;
+		}
+
+		button:hover, select:hover {
+			background-color: #6f6cff;
+		}
+
+		.chart-row {
+			display: flex;
+			justify-content: center;
+			gap: 40px;
+			flex-wrap: wrap;
+			width: 100%;
+			max-width: 900px;
+		}
+
+		.chart-container {
+			background-color: hsl(111, 100%, 95%);
+			padding: 15px;
+			border-radius: 8px;
+			box-shadow:0 10px 30px rgba(248, 75, 75, 0.836);
+			flex: 1 1 45%;
+			max-width: 50%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
+		canvas {
+			max-width: 100%;
+			height: 300px;
+		}
+
+		footer {
+			background-color: black;
+			color: white;
+			text-align: center;
+			padding: 150px 0;
+			font-size: 1rem;
+		}
+	</style>
+</head>
+
+<body  style="background: url('Orangebackground.jpeg') center/cover no-repeat; filter: brightness(0.5) contrast(0.) opacity();">
+	<header >Interactive Sales Data Visualization</header>
+	<div class="container">
+		<div class="button-group">
+			<button onclick="window.location.href='../3d_pie_chart.html'">View 3D Chart</button>
+			<select id="chartType" onchange="updateCharts()">
+				<option value="bar">Bar Chart</option>
+				<option value="pie" selected>Pie Chart</option>
+				<option value="doughnut">Doughnut Chart</option>
+				<option value="line">Line Chart</option>
+			</select>
+		</div>
+		<div class="background-container">
+  <div class="overlay"></div>
+</div>
+		<div class="chart-row">
+			<div class="chart-container">
+				<h3>Pie Chart</h3>
+				<canvas id="pieChart"></canvas>
+			</div>
+			<div class="chart-container">
+				<h3>Data Table</h3>
+				<table id="dataTable" border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; text-align: center;">
+					<thead>
+						<tr>
+							<th>Month</th>
+							<th>Pizza Sales</th>
+							<th>Burger Sales</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr><td>January</td><td>122</td><td>87</td></tr>
+						<tr><td>February</td><td>75</td><td>133</td></tr>
+						<tr><td>March</td><td>45</td><td>87</td></tr>
+						<tr><td>April</td><td>104</td><td>66</td></tr>
+						<tr><td>May</td><td>66</td><td>84</td></tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<footer>© 2025 Kshitij Pundkar . All rights reserved.</footer>
+
+	<script>
+		const pieCtx = document.getElementById('pieChart').getContext('2d');
+
+		const labels = ['January', 'February', 'March', 'April', 'May'];
+		const pizzaData = [122, 75, 45, 104, 66];
+		const burgerData = [87, 133, 87, 66, 84];
+
+		const commonOptions = {
+			responsive: true,
+			plugins: {
+				title: {
+					display: true,
+					text: 'Monthly Sales of Pizza and Burger'
+				}
+			}
+		};
+
+		let pieChart = new Chart(pieCtx, {
+			type: 'pie',
+			data: {
+				labels: labels,
+				datasets: [{
+					label: 'Pizza',
+					data: pizzaData,
+					backgroundColor: [
+						'rgba(255, 99, 132, 0.5)',
+						'rgba(54, 162, 235, 0.5)',
+						'rgba(255, 206, 86, 0.5)',
+						'rgba(75, 192, 192, 0.5)',
+						'rgba(153, 102, 255, 0.5)'
+					],
+					borderColor: [
+						'rgba(255, 99, 132, 1)',
+						'rgba(54, 162, 235, 1)',
+						'rgba(255, 206, 86, 1)',
+						'rgba(75, 192, 192, 1)',
+						'rgba(153, 102, 255, 1)'
+					],
+					borderWidth: 1
+				}, {
+					label: 'Burger',
+					data: burgerData,
+					backgroundColor: [
+						'rgba(255, 159, 64, 0.5)',
+						'rgba(255, 99, 132, 0.5)',
+						'rgba(54, 162, 235, 0.5)',
+						'rgba(255, 206, 86, 0.5)',
+						'rgba(75, 192, 192, 0.5)'
+					],
+					borderColor: [
+						'rgba(255, 159, 64, 1)',
+						'rgba(255, 99, 132, 1)',
+						'rgba(54, 162, 235, 1)',
+						'rgba(255, 206, 86, 1)',
+						'rgba(75, 192, 192, 1)'
+					],
+					borderWidth: 1
+				}]
+			},
+			options: commonOptions
+		});
+
+		function updateCharts() {
+			const selectedType = document.getElementById('chartType').value;
+
+			pieChart.destroy();
+
+			pieChart = new Chart(pieCtx, {
+				type: selectedType,
+				data: pieChart.data,
+				options: commonOptions
+			});
+		}
+	</script>
+</body>
+
+</html>
