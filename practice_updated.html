@@ -195,7 +195,443 @@ options: commonOptions
 function updateCharts() {
 const selectedType = document.getElementById('chartType').value;
 pieChart.destroy();
-pieChart = new Chart(pieCtx, {
+pieCh<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Excel Analytic Dashboard</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <style>
+            /* Default Light Theme Variables */
+            :root {
+                --bg-color: #fff;
+                --text-color: #000;
+                --btn-bg: #007bff;
+                --btn-text: #fff;
+            }
+            /* Dark Theme Variables */
+            .dark-theme {
+                --bg-color: #121212;
+                --text-color: white;
+                --btn-bg: #ff5722;
+                --btn-text: white;
+            }
+            body {
+                background-color: var(--bg-color) !important;
+                color: var(--text-color) !important;
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 20px;
+                background-image: none !important;
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+                transition: background-color 0.3s ease, color 0.3s ease;
+            }
+            header {
+                background-color: var(--bg-color) !important;
+                color: var(--text-color) !important;
+                font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+                padding: 30px 20px;
+                text-align: center;
+                font-size: 1.8rem;
+                font-weight: bold;
+            }
+            .container {
+                flex: 1;
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .button-group {
+                margin-bottom: 20px;
+                display: flex;
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .button-group button, .button-group select {
+                padding: 2px 7px !important;
+                font-size: 0.7rem !important;
+                min-width: 35px !important;
+                border: none;
+                border-radius: 3px;
+                cursor: pointer;
+                background-color: var(--btn-bg);
+                color: var(--btn-text);
+                transition: background-color 0.3s ease;
+            }
+            .button-group button.piechart-btn {
+                padding: 4px 4px;
+                font-size: 0.85rem;
+                min-width: 20px;
+                border-radius: 4px;
+            }
+            button, select {
+                padding: 16px 36px;
+                font-size: 1.15rem;
+                min-width: 15px;
+                border: none;
+                border-radius: 7px;
+                cursor: pointer;
+                background-color: var(--btn-bg);
+                color: var(--btn-text);
+                transition: background-color 0.3s ease;
+            }
+            .chart-row {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 40px;
+                flex-wrap: wrap;
+                width: 100%;
+                max-width: 900px;
+            }
+            .chart-container, #dataTable {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            #dataTable {
+                margin-top: 10px;
+            }
+            button:hover, select:hover {
+                background-color: #6f6cff;
+            }
+            .chart-row {
+                display: flex;
+                justify-content: center;
+                gap: 40px;
+                flex-wrap: wrap;
+                width: 100%;
+                max-width: 900px;
+            }
+            .chart-container {
+                background-color: var(--bg-color) !important;
+                color: var(--text-color) !important;
+                padding: 15px;
+                border-radius: 8px;
+                box-shadow: 0 10px 30px rgba(248, 75, 75, 0.05);
+                flex: 1 1 45%;
+                max-width: 50%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            canvas {
+                max-width: 100%;
+                height: 300px;
+            }
+            footer {
+                background-color: black;
+                color: white;
+                text-align: center;
+                padding: 150px 0;
+                font-size: 1rem;
+            }
+        </style>
+    </head>
+    <body style="background: url('Orangebackground.jpeg') center/cover no-repeat; filter: brightness(0.5) contrast(0.) opacity();">
+        <!-- Tailwind CSS for advanced header -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+            @keyframes float {
+                0%, 100% { transform: translateY(0px) rotateY(0deg); }
+                50% { transform: translateY(-10px) rotateY(180deg); }
+            }
+            @keyframes pulse3d {
+                0%, 100% { transform: scale(1) rotateX(0deg); }
+                50% { transform: scale(1.05) rotateX(10deg); }
+            }
+            .float-animation { animation: float 3s ease-in-out infinite; }
+            .pulse-3d { animation: pulse3d 2s ease-in-out infinite; }
+            .building-3d {
+                transform-style: preserve-3d;
+                transition: transform 0.3s ease;
+            }
+            .building-3d:hover {
+                transform: rotateY(15deg) rotateX(5deg);
+            }
+            .narrator-avatar {
+                background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+                transform-style: preserve-3d;
+            }
+        </style>
+        <header class="relative overflow-hidden shadow-2xl min-h-[140px]">
+            <!-- Dynamic Gradient Background with Mesh -->
+            <div class="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 via-cyan-400 to-red-500"></div>
+            <!-- Animated Mesh Overlay -->
+            <div class="absolute inset-0 opacity-30">
+                <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <defs>
+                        <pattern id="mesh" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+                            <circle cx="5" cy="5" r="1" fill="rgba(255,255,255,0.1)">
+                                <animate attributeName="r" values="1;2;1" dur="4s" repeatCount="indefinite"/>
+                            </circle>
+                        </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#mesh)"/>
+                </svg>
+            </div>
+            <!-- Floating Geometric Shapes -->
+            <div class="absolute inset-0 overflow-hidden">
+                <div class="absolute top-4 left-10 w-20 h-20 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full opacity-20 animate-pulse"></div>
+                <div class="absolute top-8 right-16 w-16 h-16 bg-gradient-to-br from-pink-400 to-red-500 rounded-full opacity-25">
+                    <div class="w-full h-full rounded-full animate-spin" style="animation-duration: 20s;"></div>
+                </div>
+                <div class="absolute bottom-6 left-1/4 w-12 h-12 bg-gradient-to-br from-green-400 to-teal-500 rounded-full opacity-30 float-animation"></div>
+                <div class="absolute top-12 left-1/3 w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 opacity-20 transform rotate-45 animate-bounce" style="animation-duration: 3s;"></div>
+                <div class="absolute bottom-8 right-1/3 w-6 h-6 bg-gradient-to-br from-purple-400 to-indigo-500 opacity-25 transform rotate-12 pulse-3d"></div>
+            </div>
+            <!-- Advanced Wave Layers with Glow Effects -->
+            <div class="absolute inset-0">
+                <svg class="absolute bottom-0 w-full h-full" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                    <defs>
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    <path d="M0,60 C300,120 900,0 1200,60 L1200,120 L0,120 Z" fill="rgba(59, 130, 246, 0.15)" filter="url(#glow)">
+                        <animate attributeName="d" values="M0,60 C300,120 900,0 1200,60 L1200,120 L0,120 Z;M0,80 C300,40 900,100 1200,40 L1200,120 L0,120 Z;M0,60 C300,120 900,0 1200,60 L1200,120 L0,120 Z" dur="8s" repeatCount="indefinite"/>
+                    </path>
+                </svg>
+                <svg class="absolute bottom-0 w-full h-full" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                    <path d="M0,80 C400,20 800,140 1200,80 L1200,120 L0,120 Z" fill="rgba(168, 85, 247, 0.12)">
+                        <animate attributeName="d" values="M0,80 C400,20 800,140 1200,80 L1200,120 L0,120 Z;M0,100 C400,60 800,40 1200,100 L1200,120 L0,120 Z;M0,80 C400,20 800,140 1200,80 L1200,120 L0,120 Z" dur="6s" repeatCount="indefinite"/>
+                    </path>
+                </svg>
+                <svg class="absolute bottom-0 w-full h-full" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                    <path d="M0,40 C200,100 1000,20 1200,80 L1200,120 L0,120 Z" fill="rgba(236, 72, 153, 0.1)">
+                        <animate attributeName="d" values="M0,40 C200,100 1000,20 1200,80 L1200,120 L0,120 Z;M0,60 C200,20 1000,120 1200,60 L1200,120 L0,120 Z;M0,40 C200,100 1000,20 1200,80 L1200,120 L0,120 Z" dur="10s" repeatCount="indefinite"/>
+                    </path>
+                </svg>
+            </div>
+            <!-- Particle System -->
+            <div class="absolute inset-0 overflow-hidden">
+                <div class="absolute top-1/4 left-1/4 w-1 h-1 bg-white rounded-full opacity-60 animate-ping" style="animation-delay: 0s;"></div>
+                <div class="absolute top-1/3 right-1/3 w-1 h-1 bg-cyan-300 rounded-full opacity-70 animate-ping" style="animation-delay: 1s;"></div>
+                <div class="absolute bottom-1/4 left-1/2 w-1 h-1 bg-pink-300 rounded-full opacity-50 animate-ping" style="animation-delay: 2s;"></div>
+                <div class="absolute top-1/2 right-1/4 w-1 h-1 bg-yellow-300 rounded-full opacity-80 animate-ping" style="animation-delay: 3s;"></div>
+            </div>
+            <!-- Content Container with Glass Morphism -->
+            <div class="relative z-20 container mx-auto px-6 py-8">
+                <div class="flex items-center justify-between gap-16 px-4">
+                    <div class="flex items-center gap-10 min-w-[350px]">
+                        <div class="relative group">
+                            <div class="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
+                            <div class="relative building-3d bg-white bg-opacity-10 backdrop-blur-xl text-white p-4 rounded-2xl border border-white border-opacity-20 shadow-2xl hover:shadow-cyan-500/25 transition-all duration-300">
+                                <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.84L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.84l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+                                </svg>
+                                <div class="absolute inset-0 rounded-2xl border-2 border-cyan-400 opacity-0 group-hover:opacity-100 animate-pulse"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-1">
+                            <h1 class="text-3xl font-black text-white drop-shadow-2xl bg-gradient-to-r from-white via-cyan-100 to-blue-100 bg-clip-text text-transparent">
+                                Excel Analytic Dashboard
+                            </h1>
+                            <div class="flex items-center space-x-3">
+                                <div class="h-px bg-gradient-to-r from-cyan-400 to-transparent w-12"></div>
+                                <p class="text-sm text-cyan-100 font-medium tracking-wide drop-shadow-lg">
+                                    Engineering & Management • Amravati
+                                </p>
+                                <div class="flex space-x-1">
+                                    <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                                    <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse" style="animation-delay: 0.5s;"></div>
+                                    <div class="w-2 h-2 bg-purple-400 rounded-full animate-pulse" style="animation-delay: 1s;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-8">
+                        <div class="relative group">
+                            <div class="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-xl blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
+                            <button onclick="toggleTheme()" id="themeToggle" class="relative bg-white bg-opacity-10 backdrop-blur-xl hover:bg-opacity-20 text-white p-3 rounded-xl transition-all duration-300 transform hover:scale-110 border border-white border-opacity-20 shadow-xl hover:shadow-purple-500/25" title="Toggle theme">
+                                <span id="themeIcon" class="text-2xl filter drop-shadow-lg">🌙</span>
+                            </button>
+                        </div>
+                        <div class="hidden md:flex items-center space-x-2 bg-white bg-opacity-10 backdrop-blur-xl px-4 py-2 rounded-full border border-white border-opacity-20">
+                            <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                            <span class="text-xs text-white font-medium">Online</span>
+                        </div>
+                        <div class="relative group">
+                            <div class="absolute inset-0 bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-300 animate-pulse"></div>
+                            <div class="relative narrator-avatar w-18 h-18 rounded-full flex items-center justify-center text-white font-black text-2xl pulse-3d bg-white bg-opacity-10 backdrop-blur-xl border-2 border-white border-opacity-30 shadow-2xl hover:shadow-indigo-500/50 transition-all duration-300">
+                                <span class="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">AI</span>
+                                <div class="absolute inset-0 rounded-full border-2 border-dashed border-cyan-400 opacity-50 animate-spin" style="animation-duration: 8s;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 flex items-center justify-between text-xs text-white text-opacity-70">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
+                            <span>System Active</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-1 h-1 bg-blue-400 rounded-full animate-pulse"></div>
+                            <span>Voice Ready</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-1 h-1 bg-purple-400 rounded-full animate-pulse"></div>
+                            <span>Navigation Active</span>
+                        </div>
+                    </div>
+                    <div class="hidden md:block">
+                        <span class="font-mono">v2.1.0 • Advanced Campus Assistant</span>
+                    </div>
+                </div>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-50"></div>
+        </header>
+        <!-- End Advanced Header -->
+           
+                <button class="piechart-btn" style="padding:2px 8px!important;font-size:0.7rem!important;min-width:35px!important;border-radius:3px!important;" onclick="window.location.href='../3d_pie_chart.html'">View 3D Chart</button>
+                <select id="chartType" style="padding:2px 8px!important;font-size:0.7rem!important;min-width:35px!important;border-radius:3px!important;" onchange="updateCharts()">
+                    <option value="bar">Bar Chart</option>
+                    <option value="pie" selected>Pie Chart</option>
+                    <option value="doughnut">Doughnut Chart</option>
+                    <option value="line">Line Chart</option>
+                </select>
+            </div>
+            <div class="background-container">
+                <div class="overlay"></div>
+            </div>
+            <div class="chart-row">
+                <div class="chart-container">
+                    <h3>Pie Chart</h3>
+                    <canvas id="pieChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Data Table</h3>
+                    <table id="dataTable" border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; text-align: center;">
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>Pizza Sales</th>
+                                <th>Burger Sales</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>January</td><td>122</td><td>87</td></tr>
+                            <tr><td>February</td><td>75</td><td>133</td></tr>
+                            <tr><td>March</td><td>45</td><td>87</td></tr>
+                            <tr><td>April</td><td>104</td><td>66</td></tr>
+                            <tr><td>May</td><td>66</td><td>84</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <footer>© 2025 Kshitij Pundkar . All rights reserved.</footer>
+        <script>
+            // Theme toggle functionality using CSS variables and class
+            function toggleTheme() {
+                document.body.classList.toggle('dark-theme');
+                // Also update the icon if present
+                const themeIcon = document.getElementById('themeIcon');
+                if (themeIcon) {
+                    if (document.body.classList.contains('dark-theme')) {
+                        themeIcon.textContent = '☀️';
+                    } else {
+                        themeIcon.textContent = '🌙';
+                    }
+                }
+                // Save preference
+                localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
+            }
+            // Initialize theme from localStorage
+            function initTheme() {
+                const savedTheme = localStorage.getItem('theme');
+                const themeIcon = document.getElementById('themeIcon');
+                if (savedTheme === 'dark') {
+                    document.body.classList.add('dark-theme');
+                    if (themeIcon) themeIcon.textContent = '☀️';
+                } else {
+                    document.body.classList.remove('dark-theme');
+                    if (themeIcon) themeIcon.textContent = '🌙';
+                }
+            }
+            window.addEventListener('DOMContentLoaded', initTheme);
+            // Chart.js logic
+            const pieCtx = document.getElementById('pieChart').getContext('2d');
+            const labels = ['January', 'February', 'March', 'April', 'May'];
+            const pizzaData = [122, 75, 45, 104, 66];
+            const burgerData = [87, 133, 87, 66, 84];
+            const commonOptions = {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Monthly Sales of Pizza and Burger'
+                    }
+                }
+            };
+            let pieChart = new Chart(pieCtx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Pizza',
+                            data: pizzaData,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.5)',
+                                'rgba(54, 162, 235, 0.5)',
+                                'rgba(255, 206, 86, 0.5)',
+                                'rgba(75, 192, 192, 0.5)',
+                                'rgba(153, 102, 255, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)'
+                            ],
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Burger',
+                            data: burgerData,
+                            backgroundColor: [
+                                'rgba(255, 159, 64, 0.5)',
+                                'rgba(255, 99, 132, 0.5)',
+                                'rgba(54, 162, 235, 0.5)',
+                                'rgba(255, 206, 86, 0.5)',
+                                'rgba(75, 192, 192, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 159, 64, 1)',
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)'
+                            ],
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: commonOptions
+            });
+            function updateCharts() {
+                const selectedType = document.getElementById('chartType').value;
+                pieChart.destroy();
+                pieChart = new Chart(pieCtx, {
+                    type: selectedType,
+                    data: pieChart.data,
+                    options: commonOptions
+                });
+            }
+        </script>
+    </body>
+</html>art = new Chart(pieCtx, {
 type: selectedType,
 data: pieChart.data,
 options: commonOptions
@@ -205,3 +641,4 @@ options: commonOptions
 </body>
 
 </html>
+
